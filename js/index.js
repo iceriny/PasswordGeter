@@ -367,10 +367,12 @@ document.addEventListener("keyup", (event) => {
     }
 });
 
+const currentHostName = window.location.hostname;
+const pageHref = currentHostName === "iceriny.github.io" ? "https://iceriny.github.io/PasswordGeter/" : "../";
 function buildInitiallyPage() {
     const variableContainer = document.getElementById("variable-container");
     if (!variableContainer) throw new Error("mainContainer is null");
-    fetch("https://iceriny.github.io/PasswordGeter/html/initially.html")
+    fetch(`${pageHref}/html/initially.html`)
         .then((response) => {
             if (!response.ok) {
                 throw new Error("Network response was not ok");
@@ -393,7 +395,7 @@ function buildFunctionPage() {
     const variableContainer = document.getElementById("variable-container");
     if (!variableContainer) throw new Error("mainContainer is null");
 
-    fetch("https://iceriny.github.io/PasswordGeter/html/function.html")
+    fetch(`${pageHref}/html/function.html`)
         .then((response) => {
             if (!response.ok) {
                 throw new Error("Network response was not ok");
