@@ -370,7 +370,7 @@ document.addEventListener("keyup", (event) => {
 function buildInitiallyPage() {
     const variableContainer = document.getElementById("variable-container");
     if (!variableContainer) throw new Error("mainContainer is null");
-    fetch("../html/initially.html")
+    fetch("https://iceriny.github.io/PasswordGeter/html/initially.html")
         .then((response) => {
             if (!response.ok) {
                 throw new Error("Network response was not ok");
@@ -393,7 +393,7 @@ function buildFunctionPage() {
     const variableContainer = document.getElementById("variable-container");
     if (!variableContainer) throw new Error("mainContainer is null");
 
-    fetch("../html/function.html")
+    fetch("https://iceriny.github.io/PasswordGeter/html/function.html")
         .then((response) => {
             if (!response.ok) {
                 throw new Error("Network response was not ok");
