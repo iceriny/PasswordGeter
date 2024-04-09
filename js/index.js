@@ -26,6 +26,7 @@ function identityGenerateClick() {
             setCurrentIdentityFromIdentity(identity);
             iDInputElement.value = null;
             nicknameInputElement.value = null;
+            buildFunctionPage();
         }
     }
 }
@@ -116,7 +117,7 @@ function GenerateIdentityElement(identity) {
 
     identityEl.addEventListener("click", (event) => {
         setCurrentIdentityFromElement(event.target);
-        identityEl.remove();
+        buildFunctionPage();
     });
 
     return identityEl;
@@ -180,8 +181,9 @@ function hideIdentityContextMenu(event) {
         throw new Error("identityContextMenuElement is null");
 
     if (
-        event.target === identityContextMenuElement ||
-        identityContextMenuElement.contains(event.target)
+        event &&
+        (event.target === identityContextMenuElement ||
+            identityContextMenuElement.contains(event.target))
     )
         return;
     identityContextMenuElement.style.display = "none";
@@ -208,7 +210,6 @@ function setCurrentIdentityFromElement(element) {
     const id = element.getAttribute("identity-id");
     const nickname = element.getAttribute("nickname");
     currentIdentity = { id, nickname };
-    buildFunctionPage();
 }
 /**
  *
@@ -216,7 +217,6 @@ function setCurrentIdentityFromElement(element) {
  */
 function setCurrentIdentityFromIdentity(identity) {
     currentIdentity = identity;
-    buildFunctionPage();
 }
 /**
  *
@@ -348,10 +348,17 @@ function copyToClipboard(text) {
 
 document.addEventListener("DOMContentLoaded", () => {
     buildInitiallyPage();
+    setToolTipsElement();
 });
 
 document.addEventListener("click", (event) => {
     hideIdentityContextMenu(event);
+});
+
+window.addEventListener("resize", () => {
+    hideIdentityContextMenu();
+    hideToolTips();
+    resizeBody();
 });
 
 document.addEventListener("keyup", (event) => {
@@ -367,8 +374,20 @@ document.addEventListener("keyup", (event) => {
     }
 });
 
+function resizeBody() {
+    const body = document.body;
+    const height = window.innerHeight;
+    const width = window.innerWidth;
+
+    body.style.height = height + "px";
+    body.style.width = width + "px";
+}
+
 const currentHostName = window.location.hostname;
-const pageHref = currentHostName === "iceriny.github.io" ? "https://iceriny.github.io/PasswordGeter/" : "../";
+const pageHref =
+    currentHostName === "iceriny.github.io"
+        ? "https://iceriny.github.io/PasswordGeter/"
+        : "../";
 function buildInitiallyPage() {
     const variableContainer = document.getElementById("variable-container");
     if (!variableContainer) throw new Error("mainContainer is null");
@@ -404,7 +423,7 @@ function buildFunctionPage() {
         })
         .then((data) => {
             variableContainer.innerHTML = data;
-            setToolTipsElement();
+            // setToolTipsElement();
         })
         .catch((error) => {
             console.error(
@@ -414,7 +433,6 @@ function buildFunctionPage() {
         });
 }
 let toolTips;
-
 function setToolTipsElement() {
     toolTips = document.getElementById("tool-tips");
 }
@@ -429,9 +447,11 @@ function showTips(event) {
         toolTips.innerHTML =
             "<hr>请输入秘钥有效期的开始时间<br>留空则默认为当前时间<br>格式为：<br>月:日:时:分 <br> 日:时:分 <br> 时:分";
     } else if (event.target.id === "limitTime-input") {
-        toolTips.innerHTML = "<hr>请输入时间范围(时:分)<br>默认为一个小时<br>格式为:<br>时:分";
+        toolTips.innerHTML =
+            "<hr>请输入时间范围(时:分)<br>默认为一个小时<br>格式为:<br>时:分";
     } else if (event.target.id === "content-input") {
-        toolTips.innerHTML = "<hr>可选的加密内容<br>可以添加解密时的留言或其他任何信息。";
+        toolTips.innerHTML =
+            "<hr>可选的加密内容<br>可以添加解密时的留言或其他任何信息。";
     }
 
     const firstInputElement = document.getElementById("limitTimeStart-input");
