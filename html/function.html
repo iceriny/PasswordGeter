@@ -1,0 +1,32 @@
+<div class="input-container">
+    <input
+        type="test"
+        id="limitTimeStart-input"
+        placeholder="秘钥开始时间"
+        onfocus="showTips(event)"
+        onblur="hideToolTips()"
+    />
+</div>
+<div class="input-container">
+    <input
+        type="text"
+        id="limitTime-input"
+        placeholder="秘钥有效期"
+        onfocus="showTips(event)"
+        onblur="hideToolTips()"
+    />
+</div>
+
+<div class="input-container">
+    <input
+        type="text"
+        id="content-input"
+        placeholder="加密内容(可选)"
+        onfocus="showTips(event)"
+        onblur="hideToolTips()"
+    />
+</div>
+
+<div id="button-container" class="button-container">
+    <button id="button" onclick="getSecretKey()">获取秘钥</button>
+</div>

@@ -1,14 +1,14 @@
 body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
+    margin: 0.3rem;
+    padding: 0.3rem;
 
-    font-family: 'Roboto', sans-serif;
+
+    font-family: "Roboto", sans-serif;
     overflow: hidden;
 }
 
 .main-container {
-    height: 95%;
+
     background-color: #e8d3dd;
     display: flex;
     flex-direction: column;
@@ -101,7 +101,7 @@ body {
 
 .button-container button:active {
     background-color: #ffb7f3;
-    transform: scale(0.80);
+    transform: scale(0.8);
     transition: all 0.3s ease-in-out;
 }
 
@@ -138,7 +138,7 @@ body {
 
 .existing-identity .identity-container:active {
     background-color: #ffb7f3;
-    transform: scale(0.80);
+    transform: scale(0.8);
     transition: all 0.3s ease-in-out;
 }
 
@@ -170,5 +170,21 @@ body {
 #identity-context-menu .identity-context-menu-item:hover {
     background-color: #e182d3;
     transition: all 0.3s ease-in-out;
+}
 
+#tool-tips {
+    display: none;
+    position: absolute;
+    max-width: 500px;
+    padding-left: 40px;
+
+
+    color: #a166a0;
+
+    transition: all 0.3s ease-in-out;
+}
+
+hr {
+    border: .5vh solid #a166a01f;
+    border-radius: 10px;
 }

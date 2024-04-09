@@ -211,7 +211,7 @@ function setCurrentIdentityFromElement(element) {
     buildFunctionPage();
 }
 /**
- * 
+ *
  * @param {{id:string, nickname: string}} identity 身份
  */
 function setCurrentIdentityFromIdentity(identity) {
@@ -235,24 +235,25 @@ const KEY = "bbf19967-af5d-4e85-8f3a-98afd8bde7a7";
 function encrypt(message) {
     var midProduct = "";
     for (var i = 0; i < message.length; i++) {
-        var charCode = (message.charCodeAt(i) + KEY.charCodeAt(i % KEY.length)) % 65536; // 支持 UTF-16 编码
+        var charCode =
+            (message.charCodeAt(i) + KEY.charCodeAt(i % KEY.length)) % 65536; // 支持 UTF-16 编码
         midProduct += String.fromCharCode(charCode);
     }
 
-    // var encryptedMessage = btoa(encodeURIComponent(midProduct));
-    var encryptedMessage = LZString.compressToBase64(midProduct);;
+    var encryptedMessage = LZString.compressToBase64(midProduct);
 
     return encryptedMessage;
 }
 
 // 解密函数
 function decrypt(encryptedMessage) {
-    // var msg = decodeURIComponent(atob(encryptedMessage));
     var msg = LZString.decompressFromBase64(encryptedMessage);
 
     var decryptedMessage = "";
     for (var i = 0; i < msg.length; i++) {
-        var charCode = (msg.charCodeAt(i) - KEY.charCodeAt(i % KEY.length) + 65536) % 65536; // 支持 UTF-16 编码
+        var charCode =
+            (msg.charCodeAt(i) - KEY.charCodeAt(i % KEY.length) + 65536) %
+            65536; // 支持 UTF-16 编码
         decryptedMessage += String.fromCharCode(charCode);
     }
     return decryptedMessage;
@@ -274,6 +275,10 @@ function getSecretKey() {
     if (startTimeInput !== "") {
         // 解析时间字符串
         var parts = startTimeInput.split(":");
+        if (parts.length !== 4) {
+            alert("时间格式错误!!!");
+            return;
+        }
         var month = parseInt(parts[0]);
         var day = parseInt(parts[1]);
         var hour = parseInt(parts[2]);
@@ -299,22 +304,26 @@ function getSecretKey() {
     }
 
     /** @type {string} */
-    const limitTimeInput = document.getElementById("limitTime-input")?.value;
-    if (!limitTimeInput) {
-        alert("请输入时间范围。");
+    const limitTimeInput =
+        document.getElementById("limitTime-input")?.value ?? "1:0";
+
+    const limitParts = limitTimeInput.split(":");
+    if (limitParts.length !== 2) {
+        alert("请输入正确的时间格式，如一个小时则为 => 1:0");
         return;
     }
-    const limitHour = parseInt(limitTimeInput.split(":")[0]);
-    const limitMinute = parseInt(limitTimeInput.split(":")[1]);
 
-    const limit = limitHour * 60 * 60 * 1000 + limitMinute * 60 * 1000;
-    const limitTime = startTime + limit;
+    const limitHour = limitParts[0];
+    const limitMinute = limitParts[1];
+
+    const limitTime = limitHour * 60 * 60 * 1000 + limitMinute * 60 * 1000;
 
     // VV 获取可选的加密内容 VV //
     const contentInput = document.getElementById("content-input")?.value;
 
     var unencrypted = {
         id: identityId,
+        startTime: startTime,
         limitTime: limitTime,
         content: contentInput === "" ? "无" : contentInput,
     };
@@ -326,18 +335,16 @@ function getSecretKey() {
     return encrypted;
 }
 
-
 function copyToClipboard(text) {
-    navigator.clipboard.writeText(text)
-      .then(() => {
-        alert('文本已成功复制到剪贴板');
-      })
-      .catch(err => {
-        alert('复制到剪贴板失败:', err);
-      });
-  }
-
-
+    navigator.clipboard
+        .writeText(text)
+        .then(() => {
+            alert("文本已成功复制到剪贴板");
+        })
+        .catch((err) => {
+            alert("复制到剪贴板失败:", err);
+        });
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     buildInitiallyPage();
@@ -347,46 +354,99 @@ document.addEventListener("click", (event) => {
     hideIdentityContextMenu(event);
 });
 
+document.addEventListener("keyup", (event) => {
+    if (event.key === "Escape") {
+        hideIdentityContextMenu(event);
+    }
+    if (event.key === "Enter") {
+        const buttonContainer = document.getElementById("button-container");
+        const button = buttonContainer.querySelector("button");
+        if (button) {
+            button.click();
+        }
+    }
+});
+
 function buildInitiallyPage() {
     const variableContainer = document.getElementById("variable-container");
     if (!variableContainer) throw new Error("mainContainer is null");
-
-    variableContainer.innerHTML = `
-        <div class="input-container">
-            <input type="number" id="BCID-input" placeholder="输入你BC的ID号" />
-        </div>
-        <div class="input-container">
-            <input type="text" id="nickname-input" placeholder="昵称" />
-        </div>
-
-        <div class="button-container">
-            <button id="button" onclick="identityGenerateClick()">初始化身份信息</button>
-        </div>
-
-        <div id="existing-identity" class="existing-identity">
-        </div>
-        `;
-    loadIdentity();
+    fetch("../html/initially.html")
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.text();
+        })
+        .then((data) => {
+            variableContainer.innerHTML = data;
+            loadIdentity();
+        })
+        .catch((error) => {
+            console.error(
+                "There was a problem with the fetch operation:",
+                error
+            );
+        });
 }
 
 function buildFunctionPage() {
     const variableContainer = document.getElementById("variable-container");
     if (!variableContainer) throw new Error("mainContainer is null");
 
-    variableContainer.innerHTML = `
-        <div class="input-container">
-        <input type="test" id="limitTimeStart-input" placeholder="秘钥开始时间(月:日:时:分)留空为当前时间   e.g. 1:1:12:30  => 1月1日12时30分" />
-        </div>
-        <div class="input-container">
-            <input type="text" id="limitTime-input" placeholder="秘钥有效期(时:分)    e.g. 1:30  => 一个半小时" />
-        </div>
+    fetch("../html/function.html")
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.text();
+        })
+        .then((data) => {
+            variableContainer.innerHTML = data;
+            setToolTipsElement();
+        })
+        .catch((error) => {
+            console.error(
+                "There was a problem with the fetch operation:",
+                error
+            );
+        });
+}
+let toolTips;
 
-        <div class="input-container">
-            <input type="text" id="content-input" placeholder="加密内容(可选)" />
-        </div>
+function setToolTipsElement() {
+    toolTips = document.getElementById("tool-tips");
+}
+/**
+ * 显示Tips
+ * @param {Event} event 触发的tips事件
+ */
+function showTips(event) {
+    if (!toolTips) throw new Error("tool-tips is null");
 
-        <div class="button-container">
-            <button id="button" onclick="getSecretKey()">获取秘钥</button>
-        </div>
-        `;
+    if (event.target.id === "limitTimeStart-input") {
+        toolTips.innerHTML =
+            "<hr>请输入秘钥有效期的开始时间<br>留空则默认为当前时间<br>格式为：<br>月:日:时:分 <br> 日:时:分 <br> 时:分";
+    } else if (event.target.id === "limitTime-input") {
+        toolTips.innerHTML = "<hr>请输入时间范围(时:分)<br>默认为一个小时<br>格式为:<br>时:分";
+    } else if (event.target.id === "content-input") {
+        toolTips.innerHTML = "<hr>可选的加密内容<br>可以添加解密时的留言或其他任何信息。";
+    }
+
+    const firstInputElement = document.getElementById("limitTimeStart-input");
+
+    const targetRect = firstInputElement.getBoundingClientRect();
+    toolTips.style.left = targetRect.left + targetRect.width + "px";
+    toolTips.style.top = targetRect.top + "px";
+
+    toolTips.style.display = "block";
+}
+
+/**
+ * 隐藏提示框
+ */
+function hideToolTips() {
+    if (!toolTips) throw new Error("tool-tips is null");
+
+    toolTips.style.display = "none";
+    toolTips.innerHTML = "";
 }
