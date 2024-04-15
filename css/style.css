@@ -216,6 +216,7 @@ body {
 #tool-tips {
     position: absolute;
     max-width: 500px;
+    min-width: 150px;
     padding-left: 40px;
 
     color: #a166a0;
