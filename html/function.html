@@ -1,30 +1,27 @@
 <div class="input-container">
+    <label id="limitTimeStart-label" class="input-label" for="limitTimeStart-input">秘钥开始时间</label>
     <input
-        type="test"
+        type="datetime-local"
         id="limitTimeStart-input"
-        placeholder="秘钥开始时间"
-        onfocus="showTips(event)"
-        onblur="hideToolTips()"
+        label="limitTimeStart-label"
+        onfocus="inputFocus(event)"
+        onblur="inputBlur(event)"
     />
 </div>
 <div class="input-container">
+    <label id="limitTime-label" class="input-label" for="limitTime-input">秘钥有效期</label>
     <input
-        type="text"
+        type="time"
         id="limitTime-input"
-        placeholder="秘钥有效期"
-        onfocus="showTips(event)"
-        onblur="hideToolTips()"
+        label="limitTime-label"
+        onfocus="inputFocus(event)"
+        onblur="inputBlur(event)"
     />
 </div>
 
 <div class="input-container">
-    <input
-        type="text"
-        id="content-input"
-        placeholder="加密内容(可选)"
-        onfocus="showTips(event)"
-        onblur="hideToolTips()"
-    />
+    <label id="content-label" class="input-label" for="content-input">加密内容(可选)</label>
+    <input type="text" id="content-input" label="content-label" onfocus="inputFocus(event)" onblur="inputBlur(event)" />
 </div>
 
 <div id="button-container" class="button-container">

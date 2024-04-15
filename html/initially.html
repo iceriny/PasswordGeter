@@ -1,14 +1,18 @@
 <div class="input-container">
-    <input type="number" id="BCID-input" placeholder="输入你BC的ID号" />
+    <input
+        type="number"
+        id="BCID-input"
+        onfocus="inputFocus(event)"
+        onblur="inputBlur(event)"
+        placeholder="BCID"
+    />
 </div>
 <div class="input-container">
-    <input type="text" id="nickname-input" placeholder="昵称" />
+    <input type="text" id="nickname-input" onfocus="inputFocus(event)" onblur="inputBlur(event)" placeholder="昵称" />
 </div>
 
 <div class="button-container">
-    <button id="button" onclick="identityGenerateClick()">
-        初始化身份信息
-    </button>
+    <button id="button" onclick="identityGenerateClick()">初始化身份信息</button>
 </div>
 
 <div id="existing-identity" class="existing-identity"></div>

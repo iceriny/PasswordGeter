@@ -3,6 +3,10 @@
  */
 let currentIdentity = null;
 /**
+ * @type {HTMLImageElement | null}
+ */
+let LogoImg = null;
+/**
  * 身份生成函数
  * UI点击生成身份
  */
@@ -72,10 +76,8 @@ var identityCount = 0;
  * @param {{id: string, nickname: string }} identity 身份
  */
 function GenerateIdentityElement(identity) {
-    const existingIdentityContainerElement =
-        document.getElementById("existing-identity");
-    if (!existingIdentityContainerElement)
-        throw new Error("identityContainerElement is null");
+    const existingIdentityContainerElement = document.getElementById("existing-identity");
+    if (!existingIdentityContainerElement) throw new Error("identityContainerElement is null");
 
     identityCount++;
 
@@ -127,9 +129,7 @@ function GenerateIdentityElement(identity) {
  * @param {Event} event 点击事件
  */
 function delateIdentityClick(event) {
-    const identityEl = document.getElementById(
-        event.target.parentNode.getAttribute("current-element")
-    );
+    const identityEl = document.getElementById(event.target.parentNode.getAttribute("current-element"));
     const identity = {
         id: identityEl.getAttribute("identity-id"),
         nickname: identityEl.getAttribute("nickname"),
@@ -144,24 +144,17 @@ function delateIdentityClick(event) {
  * @param {MouseEvent} event
  */
 function displayIdentityContextMenu(event) {
-    const identityContextMenuElement = document.getElementById(
-        "identity-context-menu"
-    );
-    if (!identityContextMenuElement)
-        throw new Error("identityContextMenuElement is null");
+    const identityContextMenuElement = document.getElementById("identity-context-menu");
+    if (!identityContextMenuElement) throw new Error("identityContextMenuElement is null");
 
     const target = event.target;
-    identityContextMenuElement.setAttribute(
-        "current-element",
-        target.getAttribute("id")
-    );
+    identityContextMenuElement.setAttribute("current-element", target.getAttribute("id"));
 
     const targetRect = target.getBoundingClientRect();
     if (targetRect.right > window.innerWidth) {
         identityContextMenuElement.style.right = targetRect.right - 200 + "px";
     } else {
-        identityContextMenuElement.style.right =
-            parseInt(targetRect.right) - 150 + "px";
+        identityContextMenuElement.style.right = parseInt(targetRect.right) - 150 + "px";
     }
     identityContextMenuElement.style.top = parseInt(targetRect.top) - 20 + "px";
 
@@ -174,17 +167,10 @@ function displayIdentityContextMenu(event) {
  * @returns void
  */
 function hideIdentityContextMenu(event) {
-    const identityContextMenuElement = document.getElementById(
-        "identity-context-menu"
-    );
-    if (!identityContextMenuElement)
-        throw new Error("identityContextMenuElement is null");
+    const identityContextMenuElement = document.getElementById("identity-context-menu");
+    if (!identityContextMenuElement) throw new Error("identityContextMenuElement is null");
 
-    if (
-        event &&
-        (event.target === identityContextMenuElement ||
-            identityContextMenuElement.contains(event.target))
-    )
+    if (event && (event.target === identityContextMenuElement || identityContextMenuElement.contains(event.target)))
         return;
     identityContextMenuElement.style.display = "none";
 }
@@ -192,10 +178,8 @@ function hideIdentityContextMenu(event) {
 /** ## 身份加载 */
 function loadIdentity() {
     const oldIdentity = getIdentity();
-    const existingIdentityContainerElement =
-        document.getElementById("existing-identity");
-    if (!existingIdentityContainerElement)
-        throw new Error("identityContainerElement is null");
+    const existingIdentityContainerElement = document.getElementById("existing-identity");
+    if (!existingIdentityContainerElement) throw new Error("identityContainerElement is null");
 
     oldIdentity.forEach((identity) => {
         const identityEl = GenerateIdentityElement(identity);
@@ -235,8 +219,7 @@ const KEY = "bbf19967-af5d-4e85-8f3a-98afd8bde7a7";
 function encrypt(message) {
     var midProduct = "";
     for (var i = 0; i < message.length; i++) {
-        var charCode =
-            (message.charCodeAt(i) + KEY.charCodeAt(i % KEY.length)) % 65536; // 支持 UTF-16 编码
+        var charCode = (message.charCodeAt(i) + KEY.charCodeAt(i % KEY.length)) % 65536; // 支持 UTF-16 编码
         midProduct += String.fromCharCode(charCode);
     }
 
@@ -251,9 +234,7 @@ function decrypt(encryptedMessage) {
 
     var decryptedMessage = "";
     for (var i = 0; i < msg.length; i++) {
-        var charCode =
-            (msg.charCodeAt(i) - KEY.charCodeAt(i % KEY.length) + 65536) %
-            65536; // 支持 UTF-16 编码
+        var charCode = (msg.charCodeAt(i) - KEY.charCodeAt(i % KEY.length) + 65536) % 65536; // 支持 UTF-16 编码
         decryptedMessage += String.fromCharCode(charCode);
     }
     return decryptedMessage;
@@ -269,54 +250,32 @@ function getSecretKey() {
     // VV 获取秘钥有效期 VV //
     let startTime = 0;
     /** @type {string} */
-    const startTimeInput = document.getElementById(
-        "limitTimeStart-input"
-    )?.value;
+    const startTimeInput = document.getElementById("limitTimeStart-input")?.value;
     if (startTimeInput !== "") {
         // 解析时间字符串
-        var parts = startTimeInput.split(":");
-        if (parts.length !== 4) {
-            alert("时间格式错误!!!");
-            return;
-        }
-        var month = parseInt(parts[0]);
-        var day = parseInt(parts[1]);
-        var hour = parseInt(parts[2]);
-        var minute = parseInt(parts[3]);
-
-        // 获取当前日期和时间
-        var currentDate = new Date();
-        // 创建 当前 年份
-        var currentYear = currentDate.getFullYear(); // 获取当前年份
-
-        // 如果月份超过当前月份，表示时间点在明年
-        if (month < currentDate.getMonth() + 1) {
-            // 如果当前月份为12月，且目标月份为1月，则年份加1
-            if (currentDate.getMonth() === 11 && month === 1) {
-                currentYear++;
-            }
-        }
-
-        var date = new Date(currentYear, month - 1, day, hour, minute); // 注意月份要减去 1
+        const date = new Date(startTimeInput);
         startTime = date.getTime();
     } else {
         startTime = Date.now();
     }
 
     /** @type {string} */
-    const limitTimeInput =
-        document.getElementById("limitTime-input")?.value ?? "1:0";
+    const limitTimeInput = document.getElementById("limitTime-input")?.value ?? "1:0";
+    let limitTime = 0;
 
-    const limitParts = limitTimeInput.split(":");
-    if (limitParts.length !== 2) {
-        alert("请输入正确的时间格式，如一个小时则为 => 1:0");
-        return;
+    if (limitTimeInput !== "") {
+        const limitParts = limitTimeInput.split(":");
+        if (limitParts.length !== 2) {
+            alert("请输入正确的时间格式，如一个小时则为 => 1:0");
+            return;
+        }
+        const limitHour = limitParts[0];
+        const limitMinute = limitParts[1];
+
+        limitTime = limitHour * 60 * 60 * 1000 + limitMinute * 60 * 1000;
+    } else {
+        limitTime = 60 * 60 * 1000;
     }
-
-    const limitHour = limitParts[0];
-    const limitMinute = limitParts[1];
-
-    const limitTime = limitHour * 60 * 60 * 1000 + limitMinute * 60 * 1000;
 
     // VV 获取可选的加密内容 VV //
     const contentInput = document.getElementById("content-input")?.value;
@@ -346,9 +305,142 @@ function copyToClipboard(text) {
         });
 }
 
+
+// VV UI VV //
+
+
+
+function resizeBody() {
+    const body = document.body;
+    const height = window.innerHeight;
+    const width = window.innerWidth;
+
+    body.style.height = height + "px";
+    body.style.width = width + "px";
+}
+
+const currentHostName = window.location.hostname;
+const pageHref = currentHostName === "iceriny.github.io" ? "https://iceriny.github.io/PasswordGeter/" : "../";
+function buildInitiallyPage() {
+    const variableContainer = document.getElementById("variable-container");
+    if (!variableContainer) throw new Error("mainContainer is null");
+    fetch(`${pageHref}/html/initially.html`)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.text();
+        })
+        .then((data) => {
+            variableContainer.innerHTML = data;
+            loadIdentity();
+        })
+        .catch((error) => {
+            console.error("There was a problem with the fetch operation:", error);
+        });
+}
+
+function buildFunctionPage() {
+    const variableContainer = document.getElementById("variable-container");
+    if (!variableContainer) throw new Error("mainContainer is null");
+
+    fetch(`${pageHref}/html/function.html`)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.text();
+        })
+        .then((data) => {
+            variableContainer.innerHTML = data;
+            // setToolTipsElement();
+        })
+        .catch((error) => {
+            console.error("There was a problem with the fetch operation:", error);
+        });
+}
+let toolTips;
+function setToolTipsElement() {
+    toolTips = document.getElementById("tool-tips");
+}
+function setLogoElement() {
+    LogoImg = document.getElementById("logo");
+    LogoImg.addEventListener("click", () => {
+        buildInitiallyPage();
+    });
+}
+/**
+ * Input事件的焦点元素
+ * @param {Event} event 触发焦点事件的Input元素
+ */
+function inputFocus(event) {
+    const target = event.target;
+    showTips(target);
+    LogoImg.classList.add("logo-light");
+    const label = getInputLabel(target);
+    if (label) {
+        label.classList.add("input-label-focus");
+    }
+}
+function getInputLabel(inputElement) {
+    const labelId = inputElement.getAttribute("label");
+    const label = document.getElementById(labelId);
+    return label;
+}
+/**
+ * 显示Tips
+ * @param {EventTarget | null} EventTarget 触发的tips事件
+ */
+function showTips(EventTarget) {
+    if (!toolTips) throw new Error("tool-tips is null");
+
+    if (EventTarget.id === "limitTimeStart-input") {
+        toolTips.innerHTML =
+            "<hr>请输入秘钥有效期的开始时间<br>留空则默认为当前时间<br>格式为：<br>月:日:时:分 <br> 日:时:分 <br> 时:分";
+    } else if (EventTarget.id === "limitTime-input") {
+        toolTips.innerHTML = "<hr>请输入时间范围(时:分)<br>默认为一个小时<br>格式为:<br>时:分";
+    } else if (EventTarget.id === "content-input") {
+        toolTips.innerHTML = "<hr>可选的加密内容<br>可以添加解密时的留言或其他任何信息。";
+    } else if (EventTarget.id === "BCID-input") {
+        toolTips.innerHTML = "<hr>请输入您在BC中的ID<br>此ID必须是你要赋予秘钥的目标的主人。";
+    } else if (EventTarget.id === "nickname-input") {
+        toolTips.innerHTML = "<hr>请输入您的昵称<br>这是在浏览器中记忆的显示名称。<br>可以是任意你想要的内容。";
+    }
+
+    const targetRect = EventTarget.getBoundingClientRect();
+    toolTips.style.left = targetRect.left + targetRect.width + "px";
+    toolTips.style.top = targetRect.top + "px";
+
+    toolTips.style.display = "block";
+}
+/**
+ * Input元素丢失焦点时触发
+ * @param {Event} event 输入元素丢失焦点的事件
+ */
+function inputBlur(event) {
+    hideToolTips();
+    LogoImg.classList.remove("logo-light");
+    const label = getInputLabel(event.target);
+    if (label) {
+        label.classList.remove("input-label-focus");
+    }
+}
+/**
+ * 隐藏提示框
+ */
+function hideToolTips() {
+    if (!toolTips) throw new Error("tool-tips is null");
+
+    toolTips.style.display = "none";
+    toolTips.innerHTML = "";
+}
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
     buildInitiallyPage();
     setToolTipsElement();
+    setLogoElement();
 });
 
 document.addEventListener("click", (event) => {
@@ -373,102 +465,3 @@ document.addEventListener("keyup", (event) => {
         }
     }
 });
-
-function resizeBody() {
-    const body = document.body;
-    const height = window.innerHeight;
-    const width = window.innerWidth;
-
-    body.style.height = height + "px";
-    body.style.width = width + "px";
-}
-
-const currentHostName = window.location.hostname;
-const pageHref =
-    currentHostName === "iceriny.github.io"
-        ? "https://iceriny.github.io/PasswordGeter/"
-        : "../";
-function buildInitiallyPage() {
-    const variableContainer = document.getElementById("variable-container");
-    if (!variableContainer) throw new Error("mainContainer is null");
-    fetch(`${pageHref}/html/initially.html`)
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            return response.text();
-        })
-        .then((data) => {
-            variableContainer.innerHTML = data;
-            loadIdentity();
-        })
-        .catch((error) => {
-            console.error(
-                "There was a problem with the fetch operation:",
-                error
-            );
-        });
-}
-
-function buildFunctionPage() {
-    const variableContainer = document.getElementById("variable-container");
-    if (!variableContainer) throw new Error("mainContainer is null");
-
-    fetch(`${pageHref}/html/function.html`)
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            return response.text();
-        })
-        .then((data) => {
-            variableContainer.innerHTML = data;
-            // setToolTipsElement();
-        })
-        .catch((error) => {
-            console.error(
-                "There was a problem with the fetch operation:",
-                error
-            );
-        });
-}
-let toolTips;
-function setToolTipsElement() {
-    toolTips = document.getElementById("tool-tips");
-}
-/**
- * 显示Tips
- * @param {Event} event 触发的tips事件
- */
-function showTips(event) {
-    if (!toolTips) throw new Error("tool-tips is null");
-
-    if (event.target.id === "limitTimeStart-input") {
-        toolTips.innerHTML =
-            "<hr>请输入秘钥有效期的开始时间<br>留空则默认为当前时间<br>格式为：<br>月:日:时:分 <br> 日:时:分 <br> 时:分";
-    } else if (event.target.id === "limitTime-input") {
-        toolTips.innerHTML =
-            "<hr>请输入时间范围(时:分)<br>默认为一个小时<br>格式为:<br>时:分";
-    } else if (event.target.id === "content-input") {
-        toolTips.innerHTML =
-            "<hr>可选的加密内容<br>可以添加解密时的留言或其他任何信息。";
-    }
-
-    const firstInputElement = document.getElementById("limitTimeStart-input");
-
-    const targetRect = firstInputElement.getBoundingClientRect();
-    toolTips.style.left = targetRect.left + targetRect.width + "px";
-    toolTips.style.top = targetRect.top + "px";
-
-    toolTips.style.display = "block";
-}
-
-/**
- * 隐藏提示框
- */
-function hideToolTips() {
-    if (!toolTips) throw new Error("tool-tips is null");
-
-    toolTips.style.display = "none";
-    toolTips.innerHTML = "";
-}

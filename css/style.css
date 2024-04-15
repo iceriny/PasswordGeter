@@ -35,7 +35,7 @@ body {
 .title {
     font-size: 2rem;
     font-weight: bold;
-    margin-bottom: 3rem;
+    margin-bottom: 5rem;
 }
 
 .input-container {
@@ -44,6 +44,24 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.input-container .input-label {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #97658e;
+    text-align: left;
+
+    transition: all 0.3s ease-in-out;
+}
+
+.input-container .input-label-focus {
+    color: #78436e;
+    transform: translateY(-1.5rem) scale(1.2);
+
+    transition: all 0.3s ease-in-out;
 }
 
 .input-container input {
@@ -57,11 +75,13 @@ body {
     font-size: 1rem;
     font-weight: bold;
     color: #333;
+    transition: all 0.2s ease-in-out;
 }
 
 .input-container input:focus {
     border: 1px solid #ff7fe8;
-    box-shadow: 0 0 15px #ffb7f3;
+    box-shadow: 0 0 3em #ff60e4;
+    z-index: 999;
     transition: all 0.3s ease-in-out;
 }
 
@@ -80,24 +100,40 @@ body {
 .button-container button {
     width: 10%;
     height: 3rem;
-    margin-bottom: 1rem;
+    margin-bottom: 3rem;
     border: none;
     border-radius: 15px;
     background-color: #b853a6;
     color: #fff;
     font-size: 1rem;
     text-align: center;
+    transition: all 0.3s ease-in-out;
 }
 
 .button-container button:hover {
+    color: #4b1742;
     background-color: #ffb7f3;
+    box-shadow: 0 0 3em #ff5ae6d4;
+    transform: scale(1.1);
     cursor: pointer;
     transition: all 0.3s ease-in-out;
 }
 
 .button-container button:active {
     background-color: #ffb7f3;
+    box-shadow: 0 0 3em #ff00d9;
     transform: scale(0.8);
+    transition: all 0.5s ease-in-out;
+}
+
+.button-container button:focus {
+    outline: none;
+
+    color: #4b1742;
+    background-color: #ffb7f3;
+    box-shadow: 0 0 3em #ff5ae6d4;
+    transform: scale(1.1);
+    cursor: pointer;
     transition: all 0.3s ease-in-out;
 }
 
@@ -123,10 +159,14 @@ body {
 
     align-items: center;
     justify-content: center;
+
+    transition: all 0.3s ease-in-out;
 }
 
 .existing-identity .identity-container:hover {
     background-color: #ffb7f3;
+    box-shadow: 0 0 3em #ff5ae6d4;
+
     cursor: pointer;
     transform: scale(1.2);
     transition: all 0.3s ease-in-out;
@@ -183,4 +223,29 @@ body {
 hr {
     border: .5vh solid #a166a01f;
     border-radius: 10px;
+}
+#logo {
+    width: 6rem;
+    transition: all 0.3s ease-in-out;
+}
+#logo:hover {
+    cursor: pointer;
+    filter: drop-shadow(0px 0px 2rem rgb(255, 0, 200)) saturate(2);
+    transform: scale(1.5);
+}
+.logo-light {
+    transition: all 0.3s ease-in-out;
+
+    animation: light 0.5s cubic-bezier(0, 0.73, .34, .64) infinite alternate;
+}
+
+@keyframes light {
+    0% {
+        filter: drop-shadow(0px 0px 1rem rgb(255, 0, 200));
+        transform: scale(1);
+    }
+    100% {
+        filter: drop-shadow(0px 0px 2rem rgb(255, 0, 200));
+        transform: scale(1.2);
+    }
 }
