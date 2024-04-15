@@ -115,12 +115,12 @@ function GenerateIdentityElement(identity) {
             // 在这里触发长按事件
             displayIdentityContextMenu(e);
         }, 500);
-    });
+    }, { passive: true });
 
     // 监听 touchmove 事件，如果手指移动，则取消计时
     identityEl.addEventListener("touchmove", function () {
         clearTimeout(pressTimer);
-    });
+    }, { passive: true });
 
     // 监听 touchend 事件，如果手指离开屏幕，则取消计时
     identityEl.addEventListener("touchend", function (e) {
