@@ -16,7 +16,6 @@ body {
     border-width: 10px;
     border-color: #a166a0;
     border-radius: 5rem;
-
 }
 
 .main-container .variable-container {
@@ -66,6 +65,7 @@ body {
 
 .input-container input {
     width: 30%;
+    min-width: 20em;
     height: 2rem;
     margin-bottom: 1rem;
     border: 1px solid #ccc;
@@ -75,12 +75,16 @@ body {
     font-size: 1rem;
     font-weight: bold;
     color: #333;
+    background-color: #f1ebee;
+
+    touch-action: manipulation;
     transition: all 0.2s ease-in-out;
 }
 
 .input-container input:focus {
     border: 1px solid #ff7fe8;
     box-shadow: 0 0 3em #ff60e4;
+    background-color: #ffffff;
     z-index: 999;
     transition: all 0.3s ease-in-out;
 }
@@ -98,8 +102,8 @@ body {
 }
 
 .button-container button {
-    width: 10%;
     height: 3rem;
+    padding: 0 2rem;
     margin-bottom: 3rem;
     border: none;
     border-radius: 15px;
@@ -150,6 +154,7 @@ body {
 .existing-identity .identity-container {
     display: flex;
     border-radius: 50%;
+    border-style: none;
     background-color: #ffb7f3;
     height: 50px;
     width: 50px;
@@ -209,19 +214,24 @@ body {
 }
 
 #tool-tips {
-    display: none;
     position: absolute;
     max-width: 500px;
     padding-left: 40px;
-
 
     color: #a166a0;
 
     transition: all 0.3s ease-in-out;
 }
 
+.hide {
+    opacity: 0;
+}
+.show {
+    opacity: 1;
+}
+
 hr {
-    border: .5vh solid #a166a01f;
+    border: 0.5vh solid #a166a01f;
     border-radius: 10px;
 }
 #logo {
@@ -236,7 +246,7 @@ hr {
 .logo-light {
     transition: all 0.3s ease-in-out;
 
-    animation: light 0.5s cubic-bezier(0, 0.73, .34, .64) infinite alternate;
+    animation: light 0.5s cubic-bezier(0, 0.73, 0.34, 0.64) infinite alternate;
 }
 
 @keyframes light {

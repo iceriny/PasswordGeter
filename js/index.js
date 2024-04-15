@@ -81,7 +81,7 @@ function GenerateIdentityElement(identity) {
 
     identityCount++;
 
-    const identityEl = document.createElement("div");
+    const identityEl = document.createElement("button");
     identityEl.classList.add("identity-container");
     identityEl.innerText = identity.nickname;
 
@@ -93,13 +93,23 @@ function GenerateIdentityElement(identity) {
         e.preventDefault();
         displayIdentityContextMenu(e);
     });
+    /**
+     * 点击事件处理
+     * @param {event} event 事件
+     */
+    function identityClick(event) {
+        setCurrentIdentityFromElement(event.target);
+        buildFunctionPage();
+    }
     var pressTimer;
-
+    let touchTime = 0;
     // 监听 touchstart 事件
     identityEl.addEventListener("touchstart", function (e) {
         // 阻止默认的触摸事件
         e.preventDefault();
 
+        touchTime = 0;
+        touchTime = new Date().getTime();
         // 开始计时，延时 500ms 后触发长按事件
         pressTimer = setTimeout(function () {
             // 在这里触发长按事件
@@ -113,13 +123,16 @@ function GenerateIdentityElement(identity) {
     });
 
     // 监听 touchend 事件，如果手指离开屏幕，则取消计时
-    identityEl.addEventListener("touchend", function () {
+    identityEl.addEventListener("touchend", function (e) {
         clearTimeout(pressTimer);
+        if (touchTime < 100) {
+            // 触发点击事件
+            identityClick(e);
+        }
     });
 
     identityEl.addEventListener("click", (event) => {
-        setCurrentIdentityFromElement(event.target);
-        buildFunctionPage();
+        identityClick(event);
     });
 
     return identityEl;
@@ -305,10 +318,7 @@ function copyToClipboard(text) {
         });
 }
 
-
 // VV UI VV //
-
-
 
 function resizeBody() {
     const body = document.body;
@@ -359,9 +369,13 @@ function buildFunctionPage() {
             console.error("There was a problem with the fetch operation:", error);
         });
 }
+/**
+ * @type {HTMLDivElement | undefined}
+ */
 let toolTips;
 function setToolTipsElement() {
     toolTips = document.getElementById("tool-tips");
+    toolTips.classList.add("hide");
 }
 function setLogoElement() {
     LogoImg = document.getElementById("logo");
@@ -395,23 +409,23 @@ function showTips(EventTarget) {
     if (!toolTips) throw new Error("tool-tips is null");
 
     if (EventTarget.id === "limitTimeStart-input") {
-        toolTips.innerHTML =
-            "<hr>请输入秘钥有效期的开始时间<br>留空则默认为当前时间<br>格式为：<br>月:日:时:分 <br> 日:时:分 <br> 时:分";
+        toolTips.innerHTML = "<hr>请输入秘钥有效期的开始时间<br>留空则默认为当前时间";
     } else if (EventTarget.id === "limitTime-input") {
-        toolTips.innerHTML = "<hr>请输入时间范围(时:分)<br>默认为一个小时<br>格式为:<br>时:分";
+        toolTips.innerHTML = "<hr>请输入时间范围(时:分)<br>默认为一个小时<br>最长24小时";
     } else if (EventTarget.id === "content-input") {
-        toolTips.innerHTML = "<hr>可选的加密内容<br>可以添加解密时的留言或其他任何信息。";
+        toolTips.innerHTML = "<hr>可选的加密内容<br>可以添加解密时的留言或其他任何信息";
     } else if (EventTarget.id === "BCID-input") {
-        toolTips.innerHTML = "<hr>请输入您在BC中的ID<br>此ID必须是你要赋予秘钥的目标的主人。";
+        toolTips.innerHTML = "<hr>请输入您在BC中的ID<br>此ID必须是你要赋予秘钥的目标的主人";
     } else if (EventTarget.id === "nickname-input") {
-        toolTips.innerHTML = "<hr>请输入您的昵称<br>这是在浏览器中记忆的显示名称。<br>可以是任意你想要的内容。";
+        toolTips.innerHTML = "<hr>请输入您的昵称<br>这是在浏览器中记忆的显示名称<br>可以是任意你想要的内容";
     }
 
     const targetRect = EventTarget.getBoundingClientRect();
     toolTips.style.left = targetRect.left + targetRect.width + "px";
     toolTips.style.top = targetRect.top + "px";
 
-    toolTips.style.display = "block";
+    toolTips.classList.remove("hide");
+    toolTips.classList.add("show");
 }
 /**
  * Input元素丢失焦点时触发
@@ -431,11 +445,9 @@ function inputBlur(event) {
 function hideToolTips() {
     if (!toolTips) throw new Error("tool-tips is null");
 
-    toolTips.style.display = "none";
-    toolTips.innerHTML = "";
+    toolTips.classList.remove("show");
+    toolTips.classList.add("hide");
 }
-
-
 
 document.addEventListener("DOMContentLoaded", () => {
     buildInitiallyPage();
