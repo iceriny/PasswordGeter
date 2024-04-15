@@ -101,15 +101,15 @@ function GenerateIdentityElement(identity) {
         setCurrentIdentityFromElement(event.target);
         buildFunctionPage();
     }
-    var pressTimer;
-    let touchTime = 0;
+    let pressTimer;
+    let startTouchTime = 0;
     // 监听 touchstart 事件
     identityEl.addEventListener("touchstart", function (e) {
         // 阻止默认的触摸事件
         e.preventDefault();
 
-        touchTime = 0;
-        touchTime = new Date().getTime();
+        startTouchTime = 0;
+        startTouchTime = Date.now();
         // 开始计时，延时 500ms 后触发长按事件
         pressTimer = setTimeout(function () {
             // 在这里触发长按事件
@@ -125,7 +125,7 @@ function GenerateIdentityElement(identity) {
     // 监听 touchend 事件，如果手指离开屏幕，则取消计时
     identityEl.addEventListener("touchend", function (e) {
         clearTimeout(pressTimer);
-        if (touchTime < 100) {
+        if (Date.now() - startTouchTime < 100) {
             // 触发点击事件
             identityClick(e);
         }
