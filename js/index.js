@@ -332,6 +332,8 @@ function resizeBody() {
 const currentHostName = window.location.hostname;
 const pageHref = currentHostName === "iceriny.github.io" ? "https://iceriny.github.io/PasswordGeter/" : "../";
 function buildInitiallyPage() {
+    LogoImg.parentElement.classList.add("img-container-default");
+
     const variableContainer = document.getElementById("variable-container");
     if (!variableContainer) throw new Error("mainContainer is null");
     fetch(`${pageHref}/html/initially.html`)
@@ -351,6 +353,7 @@ function buildInitiallyPage() {
 }
 
 function buildFunctionPage() {
+    LogoImg.parentElement.classList.remove("img-container-default");
     const variableContainer = document.getElementById("variable-container");
     if (!variableContainer) throw new Error("mainContainer is null");
 
@@ -450,9 +453,9 @@ function hideToolTips() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    setLogoElement();
     buildInitiallyPage();
     setToolTipsElement();
-    setLogoElement();
 });
 
 document.addEventListener("click", (event) => {
