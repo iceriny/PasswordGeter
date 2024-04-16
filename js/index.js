@@ -104,23 +104,31 @@ function GenerateIdentityElement(identity) {
     let pressTimer;
     let startTouchTime = 0;
     // 监听 touchstart 事件
-    identityEl.addEventListener("touchstart", function (e) {
-        // 阻止默认的触摸事件
-        e.preventDefault();
+    identityEl.addEventListener(
+        "touchstart",
+        function (e) {
+            // 阻止默认的触摸事件
+            e.preventDefault();
 
-        startTouchTime = 0;
-        startTouchTime = Date.now();
-        // 开始计时，延时 500ms 后触发长按事件
-        pressTimer = setTimeout(function () {
-            // 在这里触发长按事件
-            displayIdentityContextMenu(e);
-        }, 500);
-    }, { passive: true });
+            startTouchTime = 0;
+            startTouchTime = Date.now();
+            // 开始计时，延时 500ms 后触发长按事件
+            pressTimer = setTimeout(function () {
+                // 在这里触发长按事件
+                displayIdentityContextMenu(e);
+            }, 500);
+        },
+        { passive: true }
+    );
 
     // 监听 touchmove 事件，如果手指移动，则取消计时
-    identityEl.addEventListener("touchmove", function () {
-        clearTimeout(pressTimer);
-    }, { passive: true });
+    identityEl.addEventListener(
+        "touchmove",
+        function () {
+            clearTimeout(pressTimer);
+        },
+        { passive: true }
+    );
 
     // 监听 touchend 事件，如果手指离开屏幕，则取消计时
     identityEl.addEventListener("touchend", function (e) {
@@ -405,23 +413,25 @@ function getInputLabel(inputElement) {
     return label;
 }
 /**
+ * 输入框的提示信息
+ * @type {Map<string, string>}
+ */
+const tipsMap = new Map([
+    ["BCID-input", "<hr>请输入您在BC中的ID<br>此ID必须是你要赋予秘钥的目标的主人"],
+    ["nickname-input", "<hr>请输入您的昵称<br>这是在浏览器中记忆的显示名称<br>可以是任意你想要的内容"],
+    ["limitTimeStart-input", "<hr>请输入秘钥有效期的开始时间<br>留空则默认为当前时间"],
+    ["limitTime-input", "<hr>请输入时间范围(时:分)<br>默认为一个小时<br>最长24小时"],
+    ["content-input", "<hr>可选的加密内容<br>可以添加解密时的留言或其他任何信息"],
+]);
+Object.freeze(tipsMap);
+/**
  * 显示Tips
  * @param {EventTarget | null} EventTarget 触发的tips事件
  */
 function showTips(EventTarget) {
     if (!toolTips) throw new Error("tool-tips is null");
 
-    if (EventTarget.id === "limitTimeStart-input") {
-        toolTips.innerHTML = "<hr>请输入秘钥有效期的开始时间<br>留空则默认为当前时间";
-    } else if (EventTarget.id === "limitTime-input") {
-        toolTips.innerHTML = "<hr>请输入时间范围(时:分)<br>默认为一个小时<br>最长24小时";
-    } else if (EventTarget.id === "content-input") {
-        toolTips.innerHTML = "<hr>可选的加密内容<br>可以添加解密时的留言或其他任何信息";
-    } else if (EventTarget.id === "BCID-input") {
-        toolTips.innerHTML = "<hr>请输入您在BC中的ID<br>此ID必须是你要赋予秘钥的目标的主人";
-    } else if (EventTarget.id === "nickname-input") {
-        toolTips.innerHTML = "<hr>请输入您的昵称<br>这是在浏览器中记忆的显示名称<br>可以是任意你想要的内容";
-    }
+    toolTips.innerHTML = tipsMap.get(elementId) ?? "提示丢失";
 
     const targetRect = EventTarget.getBoundingClientRect();
     toolTips.style.left = targetRect.left + targetRect.width + "px";
@@ -430,6 +440,7 @@ function showTips(EventTarget) {
     toolTips.classList.remove("hide");
     toolTips.classList.add("show");
 }
+
 /**
  * Input元素丢失焦点时触发
  * @param {Event} event 输入元素丢失焦点的事件
@@ -454,8 +465,9 @@ function hideToolTips() {
 
 document.addEventListener("DOMContentLoaded", () => {
     setLogoElement();
-    buildInitiallyPage();
     setToolTipsElement();
+
+    buildInitiallyPage();
 });
 
 document.addEventListener("click", (event) => {
