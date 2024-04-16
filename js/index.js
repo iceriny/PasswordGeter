@@ -431,7 +431,7 @@ Object.freeze(tipsMap);
 function showTips(EventTarget) {
     if (!toolTips) throw new Error("tool-tips is null");
 
-    toolTips.innerHTML = tipsMap.get(elementId) ?? "提示丢失";
+    toolTips.innerHTML = tipsMap.get(EventTarget.getAttribute("id") ?? Symbol()) ?? "提示丢失";
 
     const targetRect = EventTarget.getBoundingClientRect();
     toolTips.style.left = targetRect.left + targetRect.width + "px";
